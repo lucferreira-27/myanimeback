@@ -1,0 +1,306 @@
+openapi: 3.0.0
+info:
+  title: Anime Archive API
+  version: 1.0.0
+  description: API for searching and retrieving historical anime data
+
+servers:
+  - url: https://api.animearchive.com/api/v1
+
+paths:
+  /anime:
+    get:
+      summary: Search for anime titles
+      description: Search for anime titles using various parameters
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+          description: The search query for anime titles
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+            maximum: 50
+          description: Number of results per page
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [tv, movie, ova, special, ona, music]
+          description: Type of anime
+        - in: query
+          name: score
+          schema:
+            type: number
+            minimum: 0
+            maximum: 10
+          description: Minimum score of anime (0-10)
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [airing, complete, upcoming]
+          description: Airing status of anime
+        - in: query
+          name: rating
+          schema:
+            type: string
+            enum: [g, pg, pg13, r17, r, rx]
+          description: Age rating of anime
+        - in: query
+          name: genres
+          schema:
+            type: string
+          description: Comma-separated list of genre IDs
+        - in: query
+          name: order_by
+          schema:
+            type: string
+            enum: [title, type, rating, start_date, end_date, episodes, score, scored_by, rank, popularity, members, favorites]
+          description: Field to order results by
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Sort order
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:    
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AnimeSearchResult'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /anime/historical:
+    get:
+      summary: Get historical anime data
+      description: Retrieve historical data for a specific anime from the Internet Archive
+      parameters:
+        - in: query
+          name: url
+          required: true
+          schema:
+            type: string
+          description: The MyAnimeList URL of the anime
+        - in: query
+          name: date
+          schema:
+            type: string
+            format: date
+          description: The date for which to retrieve historical data (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoricalAnimeData'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /anime/timemap:
+    get:
+      summary: Get timemap for an anime URL
+      description: Retrieve the list of available timestamps for a given anime URL
+      parameters:
+        - in: query
+          name: url
+          required: true
+          schema:
+            type: string
+          description: The MyAnimeList URL of the anime
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date
+          description: Start date for filtering timestamps (YYYY-MM-DD)
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date
+          description: End date for filtering timestamps (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimemapResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    AnimeSearchResult:
+      type: object
+      properties:
+        mal_id:
+          type: integer
+        title:
+          type: string
+        images:
+          type: object
+          properties:
+            jpg:
+              type: object
+              properties:
+                image_url:
+                  type: string
+                small_image_url:
+                  type: string
+                large_image_url:
+                  type: string
+        synopsis:
+          type: string
+        score:
+          type: number
+        rank:
+          type: integer
+        popularity:
+          type: integer
+        num_list_users:
+          type: integer
+        num_scoring_users:
+          type: integer
+        status:
+          type: string
+        type:
+          type: string
+
+    Pagination:
+      type: object
+      properties:
+        last_visible_page:
+          type: integer
+        has_next_page:
+          type: boolean
+        current_page:
+          type: integer
+        items:
+          type: object
+          properties:
+            count:
+              type: integer
+            total:
+              type: integer
+            per_page:
+              type: integer
+
+    HistoricalAnimeData:
+      type: object
+      properties:
+        archive:
+          type: object
+          properties:
+            archiveData:
+              type: object
+              properties:
+                timestamp:
+                  type: string
+                archiveUrl:
+                  type: string
+            animeData:
+              type: object
+              properties:
+                title:
+                  type: string
+                synopsis:
+                  type: string
+                score:
+                  type: string
+                scoredBy:
+                  type: string
+                ranked:
+                  type: string
+                popularity:
+                  type: string
+                members:
+                  type: string
+                favorites:
+                  type: string
+                type:
+                  type: string
+                season:
+                  type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    TimemapResponse:
+      type: object
+      properties:
+        timemap:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimemapEntry'
+
+    TimemapEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+        archiveUrl:
+          type: string

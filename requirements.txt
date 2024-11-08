@@ -1,0 +1,370 @@
+# Simplified Proof of Concept (POC) Requirements for MyAnimeBack API
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Objective](#objective)
+3. [Scope](#scope)
+4. [Functional Requirements](#functional-requirements)
+5. [Non-Functional Requirements](#non-functional-requirements)
+6. [Technical Stack](#technical-stack)
+7. [System Architecture](#system-architecture)
+8. [Implementation Steps](#implementation-steps)
+9. [Testing](#testing)
+10. [Deliverables](#deliverables)
+11. [Timeline](#timeline)
+
+---
+
+## Introduction
+
+This document outlines the simplified requirements for developing a **Proof of Concept (POC)** for the **MyAnimeBack** project. The POC aims to validate the core functionalities of building an API in TypeScript that can:
+
+- Retrieve archived MyAnimeList pages using the Wayback Machine's Timemap API.
+- Scrape and parse anime data from these archives.
+- Store the extracted data in an in-memory SQLite database.
+- Utilize external configuration files to define parsing rules for different HTML versions.
+- Expose the stored data through a RESTful API.
+
+---
+
+## Objective
+
+The primary objective of this POC is to demonstrate the feasibility of:
+
+- **Archive Retrieval**: Fetching a list of archived URLs from the Wayback Machine's Timemap API.
+- **Data Scraping**: Scraping anime data from each archived MyAnimeList web page.
+- **Dynamic Parsing**: Using external JSON configuration files to define parsing rules for different HTML structures.
+- **Data Storage**: Storing the extracted data in an in-memory SQLite database.
+- **API Exposure**: Providing RESTful endpoints to access the stored data.
+
+---
+
+## Scope
+
+The POC will focus on the following key components:
+
+1. **Archive Retrieval Module**:
+   - Integrate with the Wayback Machine's Timemap API to fetch archive URLs for a given MyAnimeList page.
+   - Parse the Timemap API response to extract relevant archive URLs.
+
+2. **Data Scraping Module**:
+   - Fetch HTML content from each archived URL.
+   - Parse and extract anime details using parsing rules defined in external JSON configuration files.
+
+3. **Configuration Management**:
+   - Develop external JSON files that specify parsing rules for different HTML versions.
+   - Ensure the scraping module can dynamically adapt to varying HTML structures based on these configurations.
+
+4. **Data Storage Module**:
+   - Set up an in-memory SQLite database.
+   - Define and create necessary database schemas to store the scraped anime data.
+
+5. **API Development**:
+   - Build RESTful endpoints to trigger the scraping process and retrieve stored anime data.
+
+6. **Error Handling and Logging**:
+   - Implement basic mechanisms to handle errors during archive retrieval, scraping, and API operations.
+   - Log significant events and errors for monitoring purposes.
+
+---
+
+## Functional Requirements
+
+1. **Archive Retrieval**:
+   - **Fetch Archives**: Retrieve a list of archived snapshots for a specific MyAnimeList URL using the Timemap API.
+   - **Parse Response**: Extract individual archive timestamps and construct full archive URLs.
+
+2. **Data Scraping**:
+   - **Fetch HTML**: Access each archived URL to obtain the HTML content of the MyAnimeList page.
+   - **Parse Data**: Use external JSON configuration files to apply the correct parsing rules based on the HTML version, extracting essential anime information such as:
+     - Title
+     - Synopsis
+     - Release Date
+     - Genres
+     - Ratings
+     - Rankings
+
+3. **Configuration Management**:
+   - **External Config Files**: Store parsing rules in JSON files, each tailored to handle different HTML structures encountered in various archive versions.
+   - **Dynamic Loading**: Ensure the scraping module can load and apply the appropriate parsing rules based on the HTML version detected.
+
+4. **Data Storage**:
+   - **Initialize Database**: Set up an in-memory SQLite database when the application starts.
+   - **Define Schema**: Create tables to store anime details with necessary fields and constraints.
+   - **Insert Data**: Save the parsed anime information into the database, avoiding duplicate entries.
+
+5. **API Endpoints**:
+   - **Trigger Scraping**:
+     - **Endpoint**: `POST /api/scrape`
+     - **Function**: Initiates the archive retrieval and scraping process for predefined MyAnimeList URLs.
+     - **Response**: Indicates success or failure of the scraping initiation.
+   
+   - **Retrieve All Anime**:
+     - **Endpoint**: `GET /api/anime`
+     - **Function**: Fetches all stored anime records from the database.
+     - **Response**: Returns a JSON array of anime objects.
+   
+   - **Retrieve Anime by ID**:
+     - **Endpoint**: `GET /api/anime/:id`
+     - **Function**: Fetches a specific anime record by its unique identifier.
+     - **Response**: Returns a JSON object of the requested anime.
+   
+   - **Search Anime by Title**:
+     - **Endpoint**: `GET /api/anime/search`
+     - **Query Parameter**: `title` (e.g., `/api/anime/search?title=naruto`)
+     - **Function**: Searches for anime titles containing the specified keyword.
+     - **Response**: Returns a JSON array of matching anime objects.
+
+6. **Error Handling and Logging**:
+   - **Graceful Failures**: Handle scenarios such as network failures, parsing errors, and database issues without crashing the application.
+   - **Meaningful Messages**: Provide clear error messages in API responses to inform users of issues.
+   - **Logging**: Record significant actions and errors to assist in debugging and monitoring.
+
+---
+
+## Non-Functional Requirements
+
+1. **Performance**:
+   - Ensure efficient retrieval and parsing of archive data.
+   - Aim for prompt API responses, ideally within 2 seconds for standard requests.
+
+2. **Scalability**:
+   - Design the system with modularity to facilitate future enhancements, such as migrating from an in-memory to a persistent database.
+
+3. **Security**:
+   - Implement basic input validation to prevent common vulnerabilities like injection attacks.
+   - (Optional) Restrict access to the scraping endpoint to authorized users.
+
+4. **Maintainability**:
+   - Write clean, modular, and well-documented TypeScript code.
+   - Use external configuration files to simplify updates to parsing rules without modifying the core codebase.
+
+5. **Usability**:
+   - Provide clear and concise API documentation, potentially using tools like Swagger.
+   - Ensure API endpoints are intuitive and adhere to RESTful best practices.
+
+6. **Portability**:
+   - Ensure the POC can run seamlessly across different operating systems (Windows, macOS, Linux) with minimal setup.
+
+---
+
+## Technical Stack
+
+- **Language**: TypeScript
+- **Runtime Environment**: Node.js
+- **Web Framework**: Express.js
+- **HTTP Client**: Axios
+- **HTML Parsing**: Cheerio
+- **Database**: SQLite (In-Memory) using `sqlite3` or `better-sqlite3` library
+- **Configuration Management**: JSON files for parsing rules
+- **Logging**: Winston or similar logging library
+- **API Documentation**: Swagger (swagger-jsdoc and swagger-ui-express)
+- **Version Control**: Git
+
+---
+
+## System Architecture
+
+```mermaid
+graph TD
+    A[Client] -->|HTTP Requests| B[Express.js API]
+    B --> C[Archive Retrieval Module]
+    C --> D[Wayback Timemap API]
+    B --> E[Scraping Module]
+    E --> F[Axios - Fetch HTML]
+    E --> G[Cheerio - Parse HTML]
+    B --> H[SQLite Database]
+    B --> I[External Config Files]
+    B --> J[Logging Module]
+```
+
+**Workflow Overview**:
+
+1. **Archive Retrieval**:
+   - The API triggers the Archive Retrieval Module to fetch archive URLs from the Timemap API.
+
+2. **Scraping Process**:
+   - The Scraping Module fetches and parses each archived HTML page using rules defined in external JSON configuration files.
+
+3. **Data Storage**:
+   - Parsed data is stored in the in-memory SQLite database.
+
+4. **API Exposure**:
+   - The Express.js API provides endpoints to interact with the stored data.
+
+---
+
+## Implementation Steps
+
+### 1. Project Setup
+
+- **Initialize Project**:
+  - Create a new Node.js project and set up TypeScript.
+  - Install necessary dependencies:
+    ```bash
+    npm install express axios cheerio sqlite3 winston swagger-jsdoc swagger-ui-express
+    npm install -D typescript @types/express @types/node @types/cheerio @types/sqlite3 @types/winston ts-node nodemon
+    ```
+  
+- **Version Control**:
+  - Initialize a Git repository and make an initial commit.
+
+### 2. Database Setup
+
+- **Install SQLite Library**:
+  - Choose between `sqlite3` or `better-sqlite3` based on preference.
+
+- **Define Schema**:
+  - Create tables for storing anime data, ensuring fields like `id`, `title`, `synopsis`, etc., are appropriately defined.
+
+- **Initialize Database**:
+  - Develop a module to set up the in-memory SQLite database and create necessary tables when the application starts.
+
+### 3. Archive Retrieval Module
+
+- **Integrate Timemap API**:
+  - Implement functionality to send requests to `https://web.archive.org/web/timemap/json?url={url}`.
+  
+- **Parse Response**:
+  - Extract archive timestamps and construct full archive URLs using the provided format.
+  
+- **Handle Duplicates**:
+  - Ensure that duplicate archive entries are identified and excluded from the scraping queue.
+
+### 4. Scraping Module
+
+- **Fetch HTML Content**:
+  - Use Axios to retrieve HTML content from each archive URL.
+  
+- **Parse HTML**:
+  - Utilize Cheerio to load and parse HTML.
+  
+- **Dynamic Parsing with Config Files**:
+  - Load parsing rules from external JSON configuration files based on the HTML version.
+  - Apply appropriate selectors to extract required anime data.
+
+### 5. Configuration Management
+
+- **Create JSON Config Files**:
+  - Define separate JSON files for different HTML structures encountered in various archive versions.
+  - Each config file should specify CSS selectors or XPath expressions for data extraction.
+  
+- **Load Configurations Dynamically**:
+  - Implement logic to determine which config file to use based on the HTML version or other identifiers.
+
+### 6. API Development
+
+- **Set Up Express.js**:
+  - Initialize the Express.js application and configure middleware for JSON parsing and logging.
+  
+- **Define Routes**:
+  - Implement the following endpoints:
+    - `POST /api/scrape`
+    - `GET /api/anime`
+    - `GET /api/anime/:id`
+    - `GET /api/anime/search`
+  
+- **Controller Logic**:
+  - Develop controller functions to handle requests, invoke the Archive Retrieval and Scraping Modules, and interact with the database.
+
+### 7. Error Handling and Logging
+
+- **Implement Error Middleware**:
+  - Create middleware to catch and handle errors globally, ensuring the API responds gracefully to failures.
+  
+- **Set Up Logging**:
+  - Configure Winston (or a similar library) to log important events, such as scraping activities, API requests, and errors.
+
+### 8. API Documentation
+
+- **Integrate Swagger**:
+  - Set up Swagger UI to document API endpoints.
+  - Define Swagger specifications to provide clear and interactive API documentation accessible via a designated route (e.g., `/api/docs`).
+
+### 9. Testing
+
+- **Manual Testing**:
+  - Perform manual tests on all API endpoints to ensure they function as expected.
+  
+- **Automated Testing** (Optional for POC):
+  - Write basic tests for critical functionalities, such as archive retrieval and data parsing, using testing frameworks like Jest.
+
+### 10. Documentation
+
+- **Create README**:
+  - Provide comprehensive setup and usage instructions.
+  - Include details about API endpoints and example requests/responses.
+  
+- **Document Configuration Files**:
+  - Explain the structure and purpose of external JSON parsing rules to facilitate easy updates and maintenance.
+
+---
+
+## Testing
+
+1. **Functional Testing**:
+   - **Archive Retrieval**: Ensure that the Timemap API is correctly queried and archive URLs are accurately extracted.
+   - **Scraping Module**: Verify that HTML content is correctly fetched and parsed using the appropriate configuration files.
+   - **API Endpoints**: Test each endpoint (`/api/scrape`, `/api/anime`, etc.) for expected responses and proper error handling.
+
+2. **Performance Testing**:
+   - Assess the efficiency of archive retrieval and scraping processes.
+   - Measure API response times to ensure they meet the performance requirements.
+
+3. **Edge Case Testing**:
+   - Test how the system handles:
+     - Invalid or malformed archive URLs.
+     - Variations in HTML structures not covered by existing configuration files.
+     - Network failures or timeouts during data fetching.
+
+4. **Security Testing**:
+   - Validate input parameters to prevent injection attacks.
+   - (Optional) Test access restrictions on the scraping endpoint if authentication is implemented.
+
+5. **Logging Verification**:
+   - Ensure that all significant actions and errors are appropriately logged.
+   - Verify that logs provide sufficient information for troubleshooting.
+
+---
+
+## Deliverables
+
+1. **Source Code**:
+   - A well-structured TypeScript codebase with clear separation of modules for archive retrieval, scraping, configuration management, data storage, and API endpoints.
+
+2. **Configuration Files**:
+   - External JSON files defining parsing rules for different HTML versions, allowing dynamic adaptation to varying page structures.
+
+3. **Documentation**:
+   - Comprehensive README with setup, running instructions, and usage guidelines.
+   - Swagger UI accessible at a designated route (e.g., `/api/docs`) detailing all API endpoints.
+
+4. **Database Schema**:
+   - Definitions of SQLite database tables and relationships, ensuring efficient storage and retrieval of anime data.
+
+5. **Logging Mechanism**:
+   - Configured logging system capturing essential events and errors to assist in monitoring and debugging.
+
+6. **Test Cases** (Optional):
+   - Automated tests covering key functionalities to ensure reliability and ease of future enhancements.
+
+
+## Conclusion
+
+This simplified POC will validate the essential functionalities required for the **MyAnimeBack** project, with a particular focus on:
+
+- Retrieving archived URLs from the Wayback Machine's Timemap API.
+- Scraping and parsing anime data using dynamic, configuration-driven rules.
+- Storing and exposing the data through a TypeScript-based API with an in-memory SQLite database.
+
+By leveraging external JSON configuration files for parsing rules, the system ensures adaptability to different HTML structures without necessitating code changes, thereby enhancing maintainability and scalability.
+
+**Next Steps**:
+
+- Assign team members to specific tasks based on expertise.
+- Begin with project setup and progress through the implementation steps.
+- Conduct regular reviews to ensure adherence to requirements and timelines.
+- Iterate on the POC based on initial findings and feedback to refine functionalities.
+
+**Good luck with your POC development!**

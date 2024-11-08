@@ -1,0 +1,12 @@
+{
+  "title": "h1.title-name",
+  "synopsis": "p[itemprop=\"description\"]",
+  "score": ".score-label",
+  "scoredBy": ".js-statistics-info[data-id=\"info1\"] span[itemprop=\"ratingCount\"]",
+  "ranked": ".po-r.js-statistics-info[data-id=\"info2\"]",
+  "popularity": "div.spaceit_pad:contains(\"Popularity:\")",
+  "members": "div.spaceit_pad:contains(\"Members:\")",
+  "favorites": "div.spaceit_pad:contains(\"Favorites:\")",
+  "type": "span.dark_text:contains(\"Type:\") + a",
+  "season": "span.dark_text:contains(\"Premiered:\") + a"
+}
