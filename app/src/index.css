@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Add these styles for the carousel */
+.trending-slider .slick-slide {
+  padding: 1rem 0;
+}
+
+.trending-slider .slick-dots {
+  bottom: -3rem;
+}
+
+.trending-slider .slick-dots li button:before {
+  color: #fff;
+}
+
+.trending-slider .slick-dots li.slick-active button:before {
+  color: #3b82f6;
+}
+
+.trending-slider .slick-prev,
+.trending-slider .slick-next {
+  width: 2.5rem;
+  height: 2.5rem;
+  z-index: 10;
+}
+
+.trending-slider .slick-prev {
+  left: -1rem;
+}
+
+.trending-slider .slick-next {
+  right: -1rem;
+}
+
+.trending-slider .slick-prev:before,
+.trending-slider .slick-next:before {
+  font-size: 2.5rem;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.trending-slider:hover .slick-prev:before,
+.trending-slider:hover .slick-next:before {
+  opacity: 1;
+}
+
+/* Add to your existing CSS */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
