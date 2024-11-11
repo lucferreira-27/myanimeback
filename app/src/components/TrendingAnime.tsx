@@ -1,44 +1,50 @@
-import { useEffect, useState } from 'react'
-import { ChartBarIcon, UsersIcon, CalendarIcon, ClockIcon, ArrowTrendingUpIcon, ArrowPathIcon } from '@heroicons/react/24/solid'
-import Slider from 'react-slick'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
+import { useEffect, useState } from 'react';
+import {
+  ChartBarIcon,
+  UsersIcon,
+  ClockIcon,
+  ArrowTrendingUpIcon,
+  ArrowPathIcon,
+} from '@heroicons/react/24/solid';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 interface AnimeData {
-  mal_id: number
-  title: string
+  mal_id: number;
+  title: string;
   images: {
     webp: {
-      image_url: string
-    }
-  }
-  score: number
-  members: number
-  rank: number
-  popularity: number
+      image_url: string;
+    };
+  };
+  score: number;
+  members: number;
+  rank: number;
+  popularity: number;
   aired: {
-    from: string
-  }
-  synopsis: string
-  rank_change?: number
+    from: string;
+  };
+  synopsis: string;
+  rank_change?: number;
   historical?: {
     rank_range: {
-      highest: number
-      lowest: number
-    }
-    score_progression: number[]
-    member_growth: string[]
+      highest: number;
+      lowest: number;
+    };
+    score_progression: number[];
+    member_growth: string[];
     last_updates: {
-      score: string
-      rank: string
-    }
-  }
+      score: string;
+      rank: string;
+    };
+  };
 }
 
 const TrendingAnime = () => {
-  const [trending, setTrending] = useState<AnimeData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [trending, setTrending] = useState<AnimeData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   const sliderSettings = {
     dots: true,
@@ -55,23 +61,23 @@ const TrendingAnime = () => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-        }
+        },
       },
       {
         breakpoint: 640,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
-  }
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
 
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const response = await fetch('https://api.jikan.moe/v4/top/anime?limit=6')
-        const data = await response.json()
+        const response = await fetch('https://api.jikan.moe/v4/top/anime?limit=6');
+        const data = await response.json();
         const enhancedData = data.data.map((anime: AnimeData) => ({
           ...anime,
           rank_change: Math.floor(Math.random() * 5) * (Math.random() > 0.5 ? 1 : -1),
@@ -84,37 +90,37 @@ const TrendingAnime = () => {
             member_growth: ['100K', '500K', '1M', '2M', `${(anime.members / 1000000).toFixed(1)}M`],
             last_updates: {
               score: '2 days ago',
-              rank: '12 hours ago'
-            }
-          }
-        }))
-        setTrending(enhancedData)
+              rank: '12 hours ago',
+            },
+          },
+        }));
+        setTrending(enhancedData);
       } catch (error) {
-        console.error('Error fetching trending anime:', error)
+        console.error('Error fetching trending anime:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchTrending()
-  }, [])
+    fetchTrending();
+  }, []);
 
   const formatAirDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
-      year: 'numeric'
-    })
-  }
+      year: 'numeric',
+    });
+  };
 
   const formatMembers = (count: number) => {
     if (count >= 1000000) {
-      return `${(count / 1000000).toFixed(1)}M`
+      return `${(count / 1000000).toFixed(1)}M`;
     }
     if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}K`
+      return `${(count / 1000).toFixed(1)}K`;
     }
-    return count.toString()
-  }
+    return count.toString();
+  };
 
   if (loading) {
     return (
@@ -123,13 +129,13 @@ const TrendingAnime = () => {
           <div key={i} className="animate-pulse bg-gray-800/50 rounded-xl h-[300px]"></div>
         ))}
       </div>
-    )
+    );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4">
+    <div className="max-w-7xl mx-auto px-4 relative z-10">
       <Slider {...sliderSettings} className="trending-slider -mx-2">
-        {trending.map((anime) => (
+        {trending.map(anime => (
           <div key={anime.mal_id} className="px-2">
             <div
               className="group relative bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 h-[300px]"
@@ -144,7 +150,7 @@ const TrendingAnime = () => {
                   alt={anime.title}
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Stats Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
                   {/* Top Stats */}
@@ -154,32 +160,34 @@ const TrendingAnime = () => {
                       <div className="flex items-center">
                         <span className="text-yellow-400 font-bold">#{anime.rank}</span>
                         {anime.rank_change && (
-                          <span className={`ml-0.5 ${anime.rank_change > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          <span
+                            className={`ml-0.5 ${
+                              anime.rank_change > 0 ? 'text-green-400' : 'text-red-400'
+                            }`}
+                          >
                             {anime.rank_change > 0 ? '↑' : '↓'}
                           </span>
                         )}
                       </div>
-                      
+
                       {/* Score */}
                       <span className="text-white">{anime.score}</span>
-                      
+
                       {/* Members */}
                       <span className="text-gray-400">{formatMembers(anime.members)}</span>
                     </div>
-                    
+
                     {/* Air Date */}
                     <span className="text-gray-400">{formatAirDate(anime.aired.from)}</span>
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-white font-medium text-lg line-clamp-2">
-                    {anime.title}
-                  </h3>
+                  <h3 className="text-white font-medium text-lg line-clamp-2">{anime.title}</h3>
                 </div>
               </div>
 
               {/* New Historical Data Hover Overlay */}
-              <div 
+              <div
                 className={`absolute inset-0 bg-gray-900/95 p-6 transition-all duration-300 z-30
                   ${hoveredId === anime.mal_id ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
               >
@@ -188,7 +196,7 @@ const TrendingAnime = () => {
                     <ClockIcon className="w-5 h-5 mr-2 text-blue-400" />
                     Historical Data
                   </h4>
-                  
+
                   <div className="space-y-6">
                     {/* Rank Range - Similar to the image */}
                     <div>
@@ -197,7 +205,8 @@ const TrendingAnime = () => {
                         Rank Range
                       </div>
                       <div className="text-white font-medium">
-                        #{anime.historical?.rank_range.highest} - #{anime.historical?.rank_range.lowest}
+                        #{anime.historical?.rank_range.highest} - #
+                        {anime.historical?.rank_range.lowest}
                       </div>
                     </div>
 
@@ -246,11 +255,15 @@ const TrendingAnime = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <span className="text-gray-400 text-sm">Score:</span>
-                          <span className="text-white ml-2">{anime.historical?.last_updates.score}</span>
+                          <span className="text-white ml-2">
+                            {anime.historical?.last_updates.score}
+                          </span>
                         </div>
                         <div>
                           <span className="text-gray-400 text-sm">Rank:</span>
-                          <span className="text-white ml-2">{anime.historical?.last_updates.rank}</span>
+                          <span className="text-white ml-2">
+                            {anime.historical?.last_updates.rank}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -262,7 +275,7 @@ const TrendingAnime = () => {
         ))}
       </Slider>
     </div>
-  )
-}
+  );
+};
 
-export default TrendingAnime
+export default TrendingAnime;

@@ -82,3 +82,29 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Add these styles to your existing CSS */
+
+/* Webkit scrollbar styles */
+.scroll-smooth::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-smooth::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-smooth::-webkit-scrollbar-thumb {
+  background-color: rgb(59 130 246 / 0.5);
+  border-radius: 3px;
+}
+
+.scroll-smooth::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(59 130 246 / 0.7);
+}
+
+/* Firefox scrollbar styles */
+.scroll-smooth {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(59 130 246 / 0.5) transparent;
+}

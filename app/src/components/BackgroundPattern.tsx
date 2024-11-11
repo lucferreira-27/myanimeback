@@ -18,7 +18,7 @@ const BackgroundPattern = () => {
       <div className="absolute top-1/3 -right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-2000" />
       <div className="absolute -bottom-32 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-4000" />
     </div>
-  )
-}
+  );
+};
 
-export default BackgroundPattern 
+export default BackgroundPattern;

@@ -1,7 +1,6 @@
 import SearchBar from '../components/SearchBar'
 import BackgroundPattern from '../components/BackgroundPattern'
 import TrendingAnime from '../components/TrendingAnime'
-import TimelinePreview from '../components/TimelinePreview'
 import { SparklesIcon, ClockIcon, ChartBarIcon, ArrowPathIcon, UserGroupIcon, DocumentChartBarIcon, ArchiveBoxIcon, ArrowsRightLeftIcon, ExclamationTriangleIcon, ChartPieIcon } from '@heroicons/react/24/solid'
 
 const Home = () => {
@@ -68,18 +67,6 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Timeline Preview Section */}
-          <div className="mb-20">
-            <div className="flex items-center justify-center mb-8">
-              <DocumentChartBarIcon className="w-8 h-8 text-blue-400 mr-3" />
-              <h2 className="text-2xl font-bold">Timeline Analysis</h2>
-            </div>
-            <p className="text-gray-300 mb-8 max-w-3xl mx-auto">
-              Track the complete history of any anime on MyAnimeList. See how scores evolved, 
-              when major changes occurred, and understand the impact of different events on its popularity.
-            </p>
-            <TimelinePreview />
-          </div>
 
           {/* Advanced Features Showcase */}
           <div className="mb-20">

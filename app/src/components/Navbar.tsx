@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { HomeIcon, ClockIcon } from '@heroicons/react/24/solid'
+import { Link } from 'react-router-dom';
+import { HomeIcon, ClockIcon } from '@heroicons/react/24/solid';
 
 const Navbar = () => {
   return (
@@ -12,11 +12,17 @@ const Navbar = () => {
             </span>
           </Link>
           <div className="flex items-center space-x-6">
-            <Link to="/" className="flex items-center space-x-1 hover:text-blue-400 transition-colors">
+            <Link
+              to="/"
+              className="flex items-center space-x-1 hover:text-blue-400 transition-colors"
+            >
               <HomeIcon className="w-5 h-5" />
               <span>Home</span>
             </Link>
-            <Link to="/history" className="flex items-center space-x-1 hover:text-blue-400 transition-colors">
+            <Link
+              to="/history"
+              className="flex items-center space-x-1 hover:text-blue-400 transition-colors"
+            >
               <ClockIcon className="w-5 h-5" />
               <span>History</span>
             </Link>
@@ -24,7 +30,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar 
+export default Navbar;
