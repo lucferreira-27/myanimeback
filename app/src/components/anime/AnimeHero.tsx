@@ -1,5 +1,5 @@
 import { ClockIcon, StarIcon, UsersIcon, CalendarIcon } from '@heroicons/react/24/solid';
-import { AnalysisConfig } from '../AnalysisConfig';
+import AnalysisConfig from '../AnalysisConfig';
 import { AnimeDetails } from '../../types/anime';
 
 interface AnimeHeroProps {
@@ -16,16 +16,19 @@ export const AnimeHero = ({ anime, onStartAnalysis, isAnalyzing }: AnimeHeroProp
           src={anime.images.webp.large_image_url}
           alt={anime.title}
           className="w-full h-full object-cover"
+          style={{
+            objectPosition: 'center 20%',
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/90 to-transparent"></div>
       </div>
-      
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8">
         <div className="flex items-end space-x-8 w-full">
           <img
             src={anime.images.webp.image_url}
             alt={anime.title}
-            className="w-48 rounded-lg shadow-xl ring-1 ring-gray-700/50"
+            className="w-48 rounded-lg shadow-xl ring-1 ring-gray-700/50 mb-4"
           />
           <div className="flex-1 mb-4">
             <div className="flex items-center justify-between">
@@ -51,4 +54,4 @@ export const AnimeHero = ({ anime, onStartAnalysis, isAnalyzing }: AnimeHeroProp
       </div>
     </div>
   );
-}; 
+};

@@ -29,4 +29,4 @@ export const QuickStats = ({ anime }: QuickStatsProps) => {
       </div>
     </div>
   );
-}; 
+};

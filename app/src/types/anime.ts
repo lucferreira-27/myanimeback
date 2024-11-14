@@ -6,6 +6,16 @@ export interface AnimeDetails {
       image_url: string;
       large_image_url: string;
     };
+    kitsu?: {
+      coverImage?: {
+        large?: string;
+        original?: string;
+      };
+      posterImage?: {
+        large?: string;
+        original?: string;
+      };
+    };
   };
   score: number;
   scored_by: number;
@@ -28,5 +38,14 @@ export interface HistoricalData {
   scores: number[];
   ranks: number[];
   members: number[];
+  favorites: number[];
   reviews: { positive: number; negative: number }[];
+}
+
+export interface AnalysisSettings {
+  startDate: string;
+  endDate: string;
+  snapshotInterval: 'daily' | 'weekly' | 'monthly';
+  dataPoints: string[];
+  depth: 'basic' | 'detailed' | 'comprehensive';
 } 
